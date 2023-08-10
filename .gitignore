@@ -1,0 +1,9 @@
+postgresql/
+etc/odoo-server.log
+etc/addons/
+etc/sessions/
+etc/filestore/
+odoo-data/
+odoo_pg_db
+odoo_pg_pass
+odoo_pg_user

@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+  pg15:
+    image: postgres:15
+    user: root
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odooblabla
+    restart: always             # run as a service
+    ports:
+      - "5431:5432"
+      #- "5432:5432" <<<< main port
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data/
+    networks:
+      - internal
+
+  web:
+    image: odoo:16
+    user: root
+    depends_on:
+      - pg15
+    ports:
+      - "20001:8069"
+      - "20002:8072" # live chat
+    tty: true
+    command: --
+    environment:
+      - HOST=pg15
+      - USER=odoo
+      - PASSWORD=odooblabla
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      # - ./entrypoint.sh:/entrypoint.sh   # if you want to install additional Python packages, uncomment this line!
+      - ./addons:/mnt/extra-addons
+      - ./etc:/etc/odoo
+      - ./odoo-data:/var/lib/odoo
+    restart: always             # run as a service
+    networks:
+      - internal
+
+networks:
+  internal:
